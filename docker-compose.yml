@@ -1,0 +1,56 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: ${PHP_DOCKERFILE_PATH}
+    container_name: php
+    volumes:
+      - ./app:/var/www/html
+      - ${PHP_XDEBUG_PATH}:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    working_dir: /var/www/html
+    networks:
+      test_network:
+        ipv4_address: ${PHP_CONTAINER_IP}
+  nginx:
+    image: nginx:${NGINX_IMAGE_VERSION}
+    container_name: nginx
+    ports:
+      - "${NGINX_HOST_PORT}:${NGINX_CONTAINER_PORT}"
+    volumes:
+      - ./app:/var/www/html
+      - ${NGINX_CONF_PATH}:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      test_network:
+        ipv4_address: ${NGINX_CONTAINER_IP}
+  postgres:
+    image: postgres:${POSTGRES_IMAGE_VERSION}
+    hostname: "postgres"
+    user: postgres
+    container_name: "postgres"
+    environment:
+      - POSTGRES_USER=${POSTGRES_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_POSTGRES_DB}
+    ports:
+      - "${POSTGRES_HOST_PORT}:${POSTGRES_CONTAINER_PORT}"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ${POSTGRES_CONF_PATH}:/etc/postgresql/postgresql.conf
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      test_network:
+        ipv4_address: ${POSTGRES_CONTAINER_IP}
+volumes:
+  pgdata:
+networks:
+  test_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
