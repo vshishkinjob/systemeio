@@ -31,3 +31,9 @@ services:
     App\Listners\JsonExceptionListener:
         tags:
             - { name: "kernel.event_listener", event: "kernel.exception", method: "onKernelException" }
+    App\Resolvers\DTOResolver:
+        arguments:
+            $serializer: '@serializer'
+            $validator: '@validator'
+        tags:
+            - { name: controller.argument_value_resolver}

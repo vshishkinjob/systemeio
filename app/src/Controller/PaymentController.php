@@ -2,18 +2,19 @@
 
 namespace App\Controller;
 
+use App\Requests\PriceCalculationRequest;
+use App\Services\PriceCalculatorService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PaymentController
+class PaymentController extends AbstractController
 {
     #[Route('/calculate-price', methods: ['POST'])]
     public function calculatePrice(
-        Request $request
-    )
-    {
-        return new Response('123');
+        PriceCalculationRequest $request,
+        PriceCalculatorService $service
+    ) {
+        return new JsonResponse(['price' => $service->calculatePrice($request->productId, $request->taxNumber, $request->couponCode)]);
     }
 }

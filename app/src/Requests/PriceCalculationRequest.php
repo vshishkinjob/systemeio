@@ -3,11 +3,11 @@
 namespace App\Requests;
 
 use Symfony\Component\Validator\Constraints as Assert;
-class PriceCalculationRequest
+class PriceCalculationRequest extends RequestDTO
 {
     #[Assert\NotBlank]
     #[Assert\Type('integer')]
-    public int $product;
+    public int $productId;
 
     #[Assert\NotBlank]
     #[Assert\Regex(

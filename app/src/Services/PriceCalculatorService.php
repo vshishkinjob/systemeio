@@ -3,9 +3,10 @@
 namespace App\Services;
 
 use App\Entity\Coupon;
-use App\Entity\Product;
+use App\Repository\Interfaces\CouponRepositoryInterface;
+use App\Repository\Interfaces\ProductRepositoryInterface;
 
-class PriceCalculator
+class PriceCalculatorService
 {
     private array $taxRates = [
         'DE' => 0.19,
@@ -14,10 +15,16 @@ class PriceCalculator
         'GR' => 0.24,
     ];
 
-    public function calculatePrice(Product $product, string $taxNumber, ?Coupon $coupon = null): float
+    public function __construct(private ProductRepositoryInterface $productRepository, private CouponRepositoryInterface $couponRepository)
     {
+    }
+
+    public function calculatePrice(int $productId, string $taxNumber, ?string $couponCode = null): float
+    {
+        $product = $this->productRepository->findById($productId);
         $basePrice = $product->getPrice();
-        if ($coupon) {
+        if ($couponCode) {
+            $coupon = $this->couponRepository->findByCode($couponCode);
             $basePrice = $this->applyCoupon($basePrice, $coupon);
         }
         $countryCode = substr($taxNumber, 0, 2);
