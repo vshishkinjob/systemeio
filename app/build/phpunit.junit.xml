@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/var/www/html/phpunit.dist.xml" tests="4" assertions="16" errors="0" failures="0" skipped="0" time="0.004844">
+    <testsuite name="Unit" tests="4" assertions="16" errors="0" failures="0" skipped="0" time="0.004844">
+      <testsuite name="App\Tests\Unit\PriceCalculatorTest" file="/var/www/html/tests/Unit/PriceCalculatorTest.php" tests="4" assertions="16" errors="0" failures="0" skipped="0" time="0.004844">
+        <testcase name="testCalculatePriceWithPercentCoupon" file="/var/www/html/tests/Unit/PriceCalculatorTest.php" line="39" class="App\Tests\Unit\PriceCalculatorTest" classname="App.Tests.Unit.PriceCalculatorTest" assertions="5" time="0.003701"/>
+        <testcase name="testCalculatePriceWithInvalidCountryCode" file="/var/www/html/tests/Unit/PriceCalculatorTest.php" line="79" class="App\Tests\Unit\PriceCalculatorTest" classname="App.Tests.Unit.PriceCalculatorTest" assertions="3" time="0.000399"/>
+        <testcase name="testCalculatePriceWithFixedCoupon" file="/var/www/html/tests/Unit/PriceCalculatorTest.php" line="59" class="App\Tests\Unit\PriceCalculatorTest" classname="App.Tests.Unit.PriceCalculatorTest" assertions="5" time="0.000402"/>
+        <testcase name="testCalculatePriceWithoutCoupon" file="/var/www/html/tests/Unit/PriceCalculatorTest.php" line="26" class="App\Tests\Unit\PriceCalculatorTest" classname="App.Tests.Unit.PriceCalculatorTest" assertions="3" time="0.000342"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

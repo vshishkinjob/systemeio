@@ -1,0 +1,1854 @@
+Escaped mutants:
+================
+
+1) /var/www/html/src/Entity/Coupon.php:55    [M] CastFloat
+
+@@ @@
+     }
+     public function getValue(): float
+     {
+-        return (float) $this->value;
++        return $this->value;
+     }
+     public function setValue(float $value): self
+     {
+
+
+2) /var/www/html/src/Entity/Coupon.php:60    [M] CastString
+
+@@ @@
+     }
+     public function setValue(float $value): self
+     {
+-        $this->value = (string) $value;
++        $this->value = $value;
+         return $this;
+     }
+ }
+
+
+3) /var/www/html/src/Entity/Product.php:41    [M] CastFloat
+
+@@ @@
+     }
+     public function getPrice(): float
+     {
+-        return (float) $this->price;
++        return $this->price;
+     }
+     public function setPrice(float $price): self
+     {
+
+
+4) /var/www/html/src/Entity/Product.php:46    [M] CastString
+
+@@ @@
+     }
+     public function setPrice(float $price): self
+     {
+-        $this->price = (string) $price;
++        $this->price = $price;
+         return $this;
+     }
+ }
+
+
+5) /var/www/html/src/Services/PriceCalculatorService.php:33    [M] DecrementInteger
+
+@@ @@
+         }
+         $countryCode = substr($taxNumber, 0, 2);
+         $taxRate = $this->taxRates[$countryCode] ?? 0;
+-        return round($basePrice * (1 + $taxRate), 2);
++        return round($basePrice * (1 + $taxRate), 1);
+     }
+     private function applyCoupon(float $price, Coupon $coupon): float
+     {
+
+
+6) /var/www/html/src/Services/PriceCalculatorService.php:33    [M] IncrementInteger
+
+@@ @@
+         }
+         $countryCode = substr($taxNumber, 0, 2);
+         $taxRate = $this->taxRates[$countryCode] ?? 0;
+-        return round($basePrice * (1 + $taxRate), 2);
++        return round($basePrice * (1 + $taxRate), 3);
+     }
+     private function applyCoupon(float $price, Coupon $coupon): float
+     {
+
+
+7) /var/www/html/src/Services/PriceCalculatorService.php:38    [M] Identical
+
+@@ @@
+     }
+     private function applyCoupon(float $price, Coupon $coupon): float
+     {
+-        if ($coupon->getType() === 'percent') {
++        if ($coupon->getType() !== 'percent') {
+             return $price * (1 - $coupon->getValue() / 100);
+         }
+         return max(0, $price - $coupon->getValue());
+     }
+ }
+
+
+8) /var/www/html/src/Services/PriceCalculatorService.php:41    [M] DecrementInteger
+
+@@ @@
+         if ($coupon->getType() === 'percent') {
+             return $price * (1 - $coupon->getValue() / 100);
+         }
+-        return max(0, $price - $coupon->getValue());
++        return max(-1, $price - $coupon->getValue());
+     }
+ }
+
+
+9) /var/www/html/src/Services/PriceCalculatorService.php:41    [M] IncrementInteger
+
+@@ @@
+         if ($coupon->getType() === 'percent') {
+             return $price * (1 - $coupon->getValue() / 100);
+         }
+-        return max(0, $price - $coupon->getValue());
++        return max(1, $price - $coupon->getValue());
+     }
+ }
+
+
+Timed Out mutants:
+==================
+
+Skipped mutants:
+================
+
+Not Covered mutants:
+====================
+
+1) /var/www/html/src/Controller/PaymentController.php:15    [M] PublicVisibility
+
+@@ @@
+ class PaymentController extends AbstractController
+ {
+     #[Route('/calculate-price', methods: ['POST'])]
+-    public function calculatePrice(PriceCalculationRequest $request, PriceCalculatorService $service)
++    protected function calculatePrice(PriceCalculationRequest $request, PriceCalculatorService $service)
+     {
+         return new JsonResponse(['price' => $service->calculatePrice($request->productId, $request->taxNumber, $request->couponCode)]);
+     }
+
+
+2) /var/www/html/src/Controller/PaymentController.php:20    [M] ArrayItem
+
+@@ @@
+     #[Route('/calculate-price', methods: ['POST'])]
+     public function calculatePrice(PriceCalculationRequest $request, PriceCalculatorService $service)
+     {
+-        return new JsonResponse(['price' => $service->calculatePrice($request->productId, $request->taxNumber, $request->couponCode)]);
++        return new JsonResponse(['price' > $service->calculatePrice($request->productId, $request->taxNumber, $request->couponCode)]);
+     }
+     #[Route('/purchase', methods: ['POST'])]
+     public function purchase(PurchaseRequest $request, PriceCalculatorService $calculatorService, PurchaseService $purchaseService)
+
+
+3) /var/www/html/src/Controller/PaymentController.php:20    [M] ArrayItemRemoval
+
+@@ @@
+     #[Route('/calculate-price', methods: ['POST'])]
+     public function calculatePrice(PriceCalculationRequest $request, PriceCalculatorService $service)
+     {
+-        return new JsonResponse(['price' => $service->calculatePrice($request->productId, $request->taxNumber, $request->couponCode)]);
++        return new JsonResponse([]);
+     }
+     #[Route('/purchase', methods: ['POST'])]
+     public function purchase(PurchaseRequest $request, PriceCalculatorService $calculatorService, PurchaseService $purchaseService)
+
+
+4) /var/www/html/src/Controller/PaymentController.php:20    [M] NewObject
+
+@@ @@
+     #[Route('/calculate-price', methods: ['POST'])]
+     public function calculatePrice(PriceCalculationRequest $request, PriceCalculatorService $service)
+     {
+-        return new JsonResponse(['price' => $service->calculatePrice($request->productId, $request->taxNumber, $request->couponCode)]);
++        new JsonResponse(['price' => $service->calculatePrice($request->productId, $request->taxNumber, $request->couponCode)]);
++        return null;
+     }
+     #[Route('/purchase', methods: ['POST'])]
+     public function purchase(PurchaseRequest $request, PriceCalculatorService $calculatorService, PurchaseService $purchaseService)
+
+
+5) /var/www/html/src/Controller/PaymentController.php:23    [M] PublicVisibility
+
+@@ @@
+         return new JsonResponse(['price' => $service->calculatePrice($request->productId, $request->taxNumber, $request->couponCode)]);
+     }
+     #[Route('/purchase', methods: ['POST'])]
+-    public function purchase(PurchaseRequest $request, PriceCalculatorService $calculatorService, PurchaseService $purchaseService)
++    protected function purchase(PurchaseRequest $request, PriceCalculatorService $calculatorService, PurchaseService $purchaseService)
+     {
+         $price = $calculatorService->calculatePrice($request->productId, $request->taxNumber, $request->couponCode);
+         $result = $purchaseService->purchase($price, $request->paymentProcessor);
+
+
+6) /var/www/html/src/Controller/PaymentController.php:31    [M] ArrayItemRemoval
+
+@@ @@
+     {
+         $price = $calculatorService->calculatePrice($request->productId, $request->taxNumber, $request->couponCode);
+         $result = $purchaseService->purchase($price, $request->paymentProcessor);
+-        return new JsonResponse(['result' => $result]);
++        return new JsonResponse([]);
+     }
+ }
+
+
+7) /var/www/html/src/Controller/PaymentController.php:31    [M] NewObject
+
+@@ @@
+     {
+         $price = $calculatorService->calculatePrice($request->productId, $request->taxNumber, $request->couponCode);
+         $result = $purchaseService->purchase($price, $request->paymentProcessor);
+-        return new JsonResponse(['result' => $result]);
++        new JsonResponse(['result' => $result]);
++        return null;
+     }
+ }
+
+
+8) /var/www/html/src/DataFixtures/AppFixtures.php:16    [M] MethodCallRemoval
+
+@@ @@
+     {
+         // Продукты
+         $iphone = new Product();
+-        $iphone->setName('Iphone')->setPrice(100.0);
++        
+         $manager->persist($iphone);
+         $headphones = new Product();
+         $headphones->setName('Наушники')->setPrice(20.0);
+
+
+9) /var/www/html/src/DataFixtures/AppFixtures.php:17    [M] MethodCallRemoval
+
+@@ @@
+         // Продукты
+         $iphone = new Product();
+         $iphone->setName('Iphone')->setPrice(100.0);
+-        $manager->persist($iphone);
++        
+         $headphones = new Product();
+         $headphones->setName('Наушники')->setPrice(20.0);
+         $manager->persist($headphones);
+
+
+10) /var/www/html/src/DataFixtures/AppFixtures.php:20    [M] MethodCallRemoval
+
+@@ @@
+         $iphone->setName('Iphone')->setPrice(100.0);
+         $manager->persist($iphone);
+         $headphones = new Product();
+-        $headphones->setName('Наушники')->setPrice(20.0);
++        
+         $manager->persist($headphones);
+         $case = new Product();
+         $case->setName('Чехол')->setPrice(10.0);
+
+
+11) /var/www/html/src/DataFixtures/AppFixtures.php:21    [M] MethodCallRemoval
+
+@@ @@
+         $manager->persist($iphone);
+         $headphones = new Product();
+         $headphones->setName('Наушники')->setPrice(20.0);
+-        $manager->persist($headphones);
++        
+         $case = new Product();
+         $case->setName('Чехол')->setPrice(10.0);
+         $manager->persist($case);
+
+
+12) /var/www/html/src/DataFixtures/AppFixtures.php:24    [M] MethodCallRemoval
+
+@@ @@
+         $headphones->setName('Наушники')->setPrice(20.0);
+         $manager->persist($headphones);
+         $case = new Product();
+-        $case->setName('Чехол')->setPrice(10.0);
++        
+         $manager->persist($case);
+         // Купоны
+         $couponD15 = new Coupon();
+
+
+13) /var/www/html/src/DataFixtures/AppFixtures.php:25    [M] MethodCallRemoval
+
+@@ @@
+         $manager->persist($headphones);
+         $case = new Product();
+         $case->setName('Чехол')->setPrice(10.0);
+-        $manager->persist($case);
++        
+         // Купоны
+         $couponD15 = new Coupon();
+         $couponD15->setCode('D15')->setType('percent')->setValue(15.0);
+
+
+14) /var/www/html/src/DataFixtures/AppFixtures.php:29    [M] MethodCallRemoval
+
+@@ @@
+         $manager->persist($case);
+         // Купоны
+         $couponD15 = new Coupon();
+-        $couponD15->setCode('D15')->setType('percent')->setValue(15.0);
++        
+         $manager->persist($couponD15);
+         $couponP10 = new Coupon();
+         $couponP10->setCode('P10')->setType('percent')->setValue(10.0);
+
+
+15) /var/www/html/src/DataFixtures/AppFixtures.php:30    [M] MethodCallRemoval
+
+@@ @@
+         // Купоны
+         $couponD15 = new Coupon();
+         $couponD15->setCode('D15')->setType('percent')->setValue(15.0);
+-        $manager->persist($couponD15);
++        
+         $couponP10 = new Coupon();
+         $couponP10->setCode('P10')->setType('percent')->setValue(10.0);
+         $manager->persist($couponP10);
+
+
+16) /var/www/html/src/DataFixtures/AppFixtures.php:33    [M] MethodCallRemoval
+
+@@ @@
+         $couponD15->setCode('D15')->setType('percent')->setValue(15.0);
+         $manager->persist($couponD15);
+         $couponP10 = new Coupon();
+-        $couponP10->setCode('P10')->setType('percent')->setValue(10.0);
++        
+         $manager->persist($couponP10);
+         $couponF5 = new Coupon();
+         $couponF5->setCode('F5')->setType('fixed')->setValue(5.0);
+
+
+17) /var/www/html/src/DataFixtures/AppFixtures.php:34    [M] MethodCallRemoval
+
+@@ @@
+         $manager->persist($couponD15);
+         $couponP10 = new Coupon();
+         $couponP10->setCode('P10')->setType('percent')->setValue(10.0);
+-        $manager->persist($couponP10);
++        
+         $couponF5 = new Coupon();
+         $couponF5->setCode('F5')->setType('fixed')->setValue(5.0);
+         $manager->persist($couponF5);
+
+
+18) /var/www/html/src/DataFixtures/AppFixtures.php:37    [M] MethodCallRemoval
+
+@@ @@
+         $couponP10->setCode('P10')->setType('percent')->setValue(10.0);
+         $manager->persist($couponP10);
+         $couponF5 = new Coupon();
+-        $couponF5->setCode('F5')->setType('fixed')->setValue(5.0);
++        
+         $manager->persist($couponF5);
+         $manager->flush();
+     }
+ }
+
+
+19) /var/www/html/src/DataFixtures/AppFixtures.php:38    [M] MethodCallRemoval
+
+@@ @@
+         $manager->persist($couponP10);
+         $couponF5 = new Coupon();
+         $couponF5->setCode('F5')->setType('fixed')->setValue(5.0);
+-        $manager->persist($couponF5);
++        
+         $manager->flush();
+     }
+ }
+
+
+20) /var/www/html/src/DataFixtures/AppFixtures.php:40    [M] MethodCallRemoval
+
+@@ @@
+         $couponF5 = new Coupon();
+         $couponF5->setCode('F5')->setType('fixed')->setValue(5.0);
+         $manager->persist($couponF5);
+-        $manager->flush();
++        
+     }
+ }
+
+
+21) /var/www/html/src/Entity/Coupon.php:26    [M] PublicVisibility
+
+@@ @@
+     private string $type;
+     #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
+     private string $value;
+-    public function getId(): ?int
++    protected function getId(): ?int
+     {
+         return $this->id;
+     }
+
+
+22) /var/www/html/src/Entity/Coupon.php:31    [M] PublicVisibility
+
+@@ @@
+     {
+         return $this->id;
+     }
+-    public function getCode(): string
++    protected function getCode(): string
+     {
+         return $this->code;
+     }
+
+
+23) /var/www/html/src/Entity/Coupon.php:36    [M] PublicVisibility
+
+@@ @@
+     {
+         return $this->code;
+     }
+-    public function setCode(string $code): self
++    protected function setCode(string $code): self
+     {
+         $this->code = $code;
+         return $this;
+
+
+24) /var/www/html/src/Entity/Product.php:23    [M] PublicVisibility
+
+@@ @@
+     private string $name;
+     #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
+     private string $price;
+-    public function getId(): ?int
++    protected function getId(): ?int
+     {
+         return $this->id;
+     }
+
+
+25) /var/www/html/src/Entity/Product.php:28    [M] PublicVisibility
+
+@@ @@
+     {
+         return $this->id;
+     }
+-    public function getName(): string
++    protected function getName(): string
+     {
+         return $this->name;
+     }
+
+
+26) /var/www/html/src/Entity/Product.php:33    [M] PublicVisibility
+
+@@ @@
+     {
+         return $this->name;
+     }
+-    public function setName(string $name): self
++    protected function setName(string $name): self
+     {
+         $this->name = $name;
+         return $this;
+
+
+27) /var/www/html/src/Exceptions/BaseHttpException.php:9    [M] DecrementInteger
+
+@@ @@
+ use Symfony\Component\HttpKernel\Exception\HttpException;
+ class BaseHttpException extends HttpException
+ {
+-    public function __construct(string $message = '', int $statusCode = 400, \Throwable $previous = null, array $headers = [], int $code = 0)
++    public function __construct(string $message = '', int $statusCode = 399, \Throwable $previous = null, array $headers = [], int $code = 0)
+     {
+         parent::__construct($statusCode, $message, $previous, $headers, $code);
+     }
+ }
+
+
+28) /var/www/html/src/Exceptions/BaseHttpException.php:9    [M] IncrementInteger
+
+@@ @@
+ use Symfony\Component\HttpKernel\Exception\HttpException;
+ class BaseHttpException extends HttpException
+ {
+-    public function __construct(string $message = '', int $statusCode = 400, \Throwable $previous = null, array $headers = [], int $code = 0)
++    public function __construct(string $message = '', int $statusCode = 401, \Throwable $previous = null, array $headers = [], int $code = 0)
+     {
+         parent::__construct($statusCode, $message, $previous, $headers, $code);
+     }
+ }
+
+
+29) /var/www/html/src/Exceptions/BaseHttpException.php:9    [M] DecrementInteger
+
+@@ @@
+ use Symfony\Component\HttpKernel\Exception\HttpException;
+ class BaseHttpException extends HttpException
+ {
+-    public function __construct(string $message = '', int $statusCode = 400, \Throwable $previous = null, array $headers = [], int $code = 0)
++    public function __construct(string $message = '', int $statusCode = 400, \Throwable $previous = null, array $headers = [], int $code = -1)
+     {
+         parent::__construct($statusCode, $message, $previous, $headers, $code);
+     }
+ }
+
+
+30) /var/www/html/src/Exceptions/BaseHttpException.php:9    [M] IncrementInteger
+
+@@ @@
+ use Symfony\Component\HttpKernel\Exception\HttpException;
+ class BaseHttpException extends HttpException
+ {
+-    public function __construct(string $message = '', int $statusCode = 400, \Throwable $previous = null, array $headers = [], int $code = 0)
++    public function __construct(string $message = '', int $statusCode = 400, \Throwable $previous = null, array $headers = [], int $code = 1)
+     {
+         parent::__construct($statusCode, $message, $previous, $headers, $code);
+     }
+ }
+
+
+31) /var/www/html/src/Exceptions/BaseHttpException.php:11    [M] MethodCallRemoval
+
+@@ @@
+ {
+     public function __construct(string $message = '', int $statusCode = 400, \Throwable $previous = null, array $headers = [], int $code = 0)
+     {
+-        parent::__construct($statusCode, $message, $previous, $headers, $code);
++        
+     }
+ }
+
+
+32) /var/www/html/src/Exceptions/CouponNotFoundException.php:9    [M] DecrementInteger
+
+@@ @@
+ {
+     public function __construct(string $message = 'Invalid coupon code')
+     {
+-        parent::__construct($message, 404);
++        parent::__construct($message, 403);
+     }
+ }
+
+
+33) /var/www/html/src/Exceptions/CouponNotFoundException.php:9    [M] IncrementInteger
+
+@@ @@
+ {
+     public function __construct(string $message = 'Invalid coupon code')
+     {
+-        parent::__construct($message, 404);
++        parent::__construct($message, 405);
+     }
+ }
+
+
+34) /var/www/html/src/Exceptions/CouponNotFoundException.php:9    [M] MethodCallRemoval
+
+@@ @@
+ {
+     public function __construct(string $message = 'Invalid coupon code')
+     {
+-        parent::__construct($message, 404);
++        
+     }
+ }
+
+
+35) /var/www/html/src/Exceptions/InvalidDtoArguments.php:14    [M] DecrementInteger
+
+@@ @@
+     public function __construct(?array $errors = null, string $message = 'Bad request')
+     {
+         $this->errors = $errors;
+-        parent::__construct($message, 400);
++        parent::__construct($message, 399);
+     }
+     public function getErrors(): array
+     {
+
+
+36) /var/www/html/src/Exceptions/InvalidDtoArguments.php:14    [M] IncrementInteger
+
+@@ @@
+     public function __construct(?array $errors = null, string $message = 'Bad request')
+     {
+         $this->errors = $errors;
+-        parent::__construct($message, 400);
++        parent::__construct($message, 401);
+     }
+     public function getErrors(): array
+     {
+
+
+37) /var/www/html/src/Exceptions/InvalidDtoArguments.php:14    [M] MethodCallRemoval
+
+@@ @@
+     public function __construct(?array $errors = null, string $message = 'Bad request')
+     {
+         $this->errors = $errors;
+-        parent::__construct($message, 400);
++        
+     }
+     public function getErrors(): array
+     {
+
+
+38) /var/www/html/src/Exceptions/InvalidDtoArguments.php:17    [M] PublicVisibility
+
+@@ @@
+         $this->errors = $errors;
+         parent::__construct($message, 400);
+     }
+-    public function getErrors(): array
++    protected function getErrors(): array
+     {
+         return $this->errors;
+     }
+ }
+
+
+39) /var/www/html/src/Exceptions/ProductNotFoundException.php:9    [M] DecrementInteger
+
+@@ @@
+ {
+     public function __construct(string $message = 'Product not found')
+     {
+-        parent::__construct($message, 404);
++        parent::__construct($message, 403);
+     }
+ }
+
+
+40) /var/www/html/src/Exceptions/ProductNotFoundException.php:9    [M] IncrementInteger
+
+@@ @@
+ {
+     public function __construct(string $message = 'Product not found')
+     {
+-        parent::__construct($message, 404);
++        parent::__construct($message, 405);
+     }
+ }
+
+
+41) /var/www/html/src/Exceptions/ProductNotFoundException.php:9    [M] MethodCallRemoval
+
+@@ @@
+ {
+     public function __construct(string $message = 'Product not found')
+     {
+-        parent::__construct($message, 404);
++        
+     }
+ }
+
+
+42) /var/www/html/src/Listners/JsonExceptionListener.php:12    [M] PublicVisibility
+
+@@ @@
+ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+ class JsonExceptionListener
+ {
+-    public function onKernelException(ExceptionEvent $event)
++    protected function onKernelException(ExceptionEvent $event)
+     {
+         $exception = $event->getThrowable();
+         if ($exception instanceof InvalidDtoArguments) {
+
+
+43) /var/www/html/src/Listners/JsonExceptionListener.php:15    [M] InstanceOf_
+
+@@ @@
+     public function onKernelException(ExceptionEvent $event)
+     {
+         $exception = $event->getThrowable();
+-        if ($exception instanceof InvalidDtoArguments) {
++        if (true) {
+             $response = new JsonResponse();
+             if (!empty($exception->getErrors())) {
+                 $response->setData(['errors' => $exception->getErrors()]);
+
+
+44) /var/www/html/src/Listners/JsonExceptionListener.php:15    [M] InstanceOf_
+
+@@ @@
+     public function onKernelException(ExceptionEvent $event)
+     {
+         $exception = $event->getThrowable();
+-        if ($exception instanceof InvalidDtoArguments) {
++        if (false) {
+             $response = new JsonResponse();
+             if (!empty($exception->getErrors())) {
+                 $response->setData(['errors' => $exception->getErrors()]);
+
+
+45) /var/www/html/src/Listners/JsonExceptionListener.php:17    [M] LogicalNot
+
+@@ @@
+         $exception = $event->getThrowable();
+         if ($exception instanceof InvalidDtoArguments) {
+             $response = new JsonResponse();
+-            if (!empty($exception->getErrors())) {
++            if (empty($exception->getErrors())) {
+                 $response->setData(['errors' => $exception->getErrors()]);
+             } else {
+                 $response->setData(['error' => $exception->getMessage()]);
+
+
+46) /var/www/html/src/Listners/JsonExceptionListener.php:18    [M] ArrayItem
+
+@@ @@
+         if ($exception instanceof InvalidDtoArguments) {
+             $response = new JsonResponse();
+             if (!empty($exception->getErrors())) {
+-                $response->setData(['errors' => $exception->getErrors()]);
++                $response->setData(['errors' > $exception->getErrors()]);
+             } else {
+                 $response->setData(['error' => $exception->getMessage()]);
+             }
+
+
+47) /var/www/html/src/Listners/JsonExceptionListener.php:18    [M] ArrayItemRemoval
+
+@@ @@
+         if ($exception instanceof InvalidDtoArguments) {
+             $response = new JsonResponse();
+             if (!empty($exception->getErrors())) {
+-                $response->setData(['errors' => $exception->getErrors()]);
++                $response->setData([]);
+             } else {
+                 $response->setData(['error' => $exception->getMessage()]);
+             }
+
+
+48) /var/www/html/src/Listners/JsonExceptionListener.php:18    [M] MethodCallRemoval
+
+@@ @@
+         if ($exception instanceof InvalidDtoArguments) {
+             $response = new JsonResponse();
+             if (!empty($exception->getErrors())) {
+-                $response->setData(['errors' => $exception->getErrors()]);
++                
+             } else {
+                 $response->setData(['error' => $exception->getMessage()]);
+             }
+
+
+49) /var/www/html/src/Listners/JsonExceptionListener.php:20    [M] ArrayItem
+
+@@ @@
+             if (!empty($exception->getErrors())) {
+                 $response->setData(['errors' => $exception->getErrors()]);
+             } else {
+-                $response->setData(['error' => $exception->getMessage()]);
++                $response->setData(['error' > $exception->getMessage()]);
+             }
+             $response->setStatusCode(400);
+             $event->setResponse($response);
+
+
+50) /var/www/html/src/Listners/JsonExceptionListener.php:20    [M] ArrayItemRemoval
+
+@@ @@
+             if (!empty($exception->getErrors())) {
+                 $response->setData(['errors' => $exception->getErrors()]);
+             } else {
+-                $response->setData(['error' => $exception->getMessage()]);
++                $response->setData([]);
+             }
+             $response->setStatusCode(400);
+             $event->setResponse($response);
+
+
+51) /var/www/html/src/Listners/JsonExceptionListener.php:20    [M] MethodCallRemoval
+
+@@ @@
+             if (!empty($exception->getErrors())) {
+                 $response->setData(['errors' => $exception->getErrors()]);
+             } else {
+-                $response->setData(['error' => $exception->getMessage()]);
++                
+             }
+             $response->setStatusCode(400);
+             $event->setResponse($response);
+
+
+52) /var/www/html/src/Listners/JsonExceptionListener.php:22    [M] DecrementInteger
+
+@@ @@
+             } else {
+                 $response->setData(['error' => $exception->getMessage()]);
+             }
+-            $response->setStatusCode(400);
++            $response->setStatusCode(399);
+             $event->setResponse($response);
+         } else {
+             $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
+
+
+53) /var/www/html/src/Listners/JsonExceptionListener.php:22    [M] IncrementInteger
+
+@@ @@
+             } else {
+                 $response->setData(['error' => $exception->getMessage()]);
+             }
+-            $response->setStatusCode(400);
++            $response->setStatusCode(401);
+             $event->setResponse($response);
+         } else {
+             $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
+
+
+54) /var/www/html/src/Listners/JsonExceptionListener.php:22    [M] MethodCallRemoval
+
+@@ @@
+             } else {
+                 $response->setData(['error' => $exception->getMessage()]);
+             }
+-            $response->setStatusCode(400);
++            
+             $event->setResponse($response);
+         } else {
+             $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
+
+
+55) /var/www/html/src/Listners/JsonExceptionListener.php:23    [M] MethodCallRemoval
+
+@@ @@
+                 $response->setData(['error' => $exception->getMessage()]);
+             }
+             $response->setStatusCode(400);
+-            $event->setResponse($response);
++            
+         } else {
+             $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
+             $errorMessage = $exception->getMessage();
+
+
+56) /var/www/html/src/Listners/JsonExceptionListener.php:25    [M] InstanceOf_
+
+@@ @@
+             $response->setStatusCode(400);
+             $event->setResponse($response);
+         } else {
+-            $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
++            $statusCode = true ? $exception->getStatusCode() : 500;
+             $errorMessage = $exception->getMessage();
+             $response = new JsonResponse(['status' => $statusCode, 'error' => $errorMessage], $statusCode);
+         }
+
+
+57) /var/www/html/src/Listners/JsonExceptionListener.php:25    [M] InstanceOf_
+
+@@ @@
+             $response->setStatusCode(400);
+             $event->setResponse($response);
+         } else {
+-            $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
++            $statusCode = false ? $exception->getStatusCode() : 500;
+             $errorMessage = $exception->getMessage();
+             $response = new JsonResponse(['status' => $statusCode, 'error' => $errorMessage], $statusCode);
+         }
+
+
+58) /var/www/html/src/Listners/JsonExceptionListener.php:25    [M] Ternary
+
+@@ @@
+             $response->setStatusCode(400);
+             $event->setResponse($response);
+         } else {
+-            $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
++            $statusCode = $exception instanceof HttpExceptionInterface ? 500 : $exception->getStatusCode();
+             $errorMessage = $exception->getMessage();
+             $response = new JsonResponse(['status' => $statusCode, 'error' => $errorMessage], $statusCode);
+         }
+
+
+59) /var/www/html/src/Listners/JsonExceptionListener.php:27    [M] DecrementInteger
+
+@@ @@
+             $response->setStatusCode(400);
+             $event->setResponse($response);
+         } else {
+-            $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
++            $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 499;
+             $errorMessage = $exception->getMessage();
+             $response = new JsonResponse(['status' => $statusCode, 'error' => $errorMessage], $statusCode);
+         }
+
+
+60) /var/www/html/src/Listners/JsonExceptionListener.php:27    [M] IncrementInteger
+
+@@ @@
+             $response->setStatusCode(400);
+             $event->setResponse($response);
+         } else {
+-            $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
++            $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 501;
+             $errorMessage = $exception->getMessage();
+             $response = new JsonResponse(['status' => $statusCode, 'error' => $errorMessage], $statusCode);
+         }
+
+
+61) /var/www/html/src/Listners/JsonExceptionListener.php:30    [M] ArrayItemRemoval
+
+@@ @@
+         } else {
+             $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
+             $errorMessage = $exception->getMessage();
+-            $response = new JsonResponse(['status' => $statusCode, 'error' => $errorMessage], $statusCode);
++            $response = new JsonResponse(['error' => $errorMessage], $statusCode);
+         }
+         $response->headers->set('Content-Type', 'application/json');
+         $event->setResponse($response);
+     }
+ }
+
+
+62) /var/www/html/src/Listners/JsonExceptionListener.php:37    [M] MethodCallRemoval
+
+@@ @@
+             $errorMessage = $exception->getMessage();
+             $response = new JsonResponse(['status' => $statusCode, 'error' => $errorMessage], $statusCode);
+         }
+-        $response->headers->set('Content-Type', 'application/json');
++        
+         $event->setResponse($response);
+     }
+ }
+
+
+63) /var/www/html/src/Listners/JsonExceptionListener.php:38    [M] MethodCallRemoval
+
+@@ @@
+             $response = new JsonResponse(['status' => $statusCode, 'error' => $errorMessage], $statusCode);
+         }
+         $response->headers->set('Content-Type', 'application/json');
+-        $event->setResponse($response);
++        
+     }
+ }
+
+
+64) /var/www/html/src/Listners/JsonRequestTransformerListener.php:14    [M] PublicVisibility
+
+@@ @@
+ use Symfony\Component\Validator\Constraints\Json;
+ class JsonRequestTransformerListener
+ {
+-    public function onKernelRequest(RequestEvent $event)
++    protected function onKernelRequest(RequestEvent $event)
+     {
+         $request = $event->getRequest();
+         $content = $request->getContent();
+
+
+65) /var/www/html/src/Listners/JsonRequestTransformerListener.php:22    [M] LogicalNot
+
+@@ @@
+             return;
+         }
+         $response = new JsonResponse();
+-        if (!$this->isJsonRequest($request)) {
++        if ($this->isJsonRequest($request)) {
+             $response = $response->setData(['error' => 'Only JSON requests are allowed.']);
+             $response->setStatusCode(Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+             $event->setResponse($response);
+
+
+66) /var/www/html/src/Listners/JsonRequestTransformerListener.php:23    [M] ArrayItemRemoval
+
+@@ @@
+         }
+         $response = new JsonResponse();
+         if (!$this->isJsonRequest($request)) {
+-            $response = $response->setData(['error' => 'Only JSON requests are allowed.']);
++            $response = $response->setData([]);
+             $response->setStatusCode(Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+             $event->setResponse($response);
+             return;
+
+
+67) /var/www/html/src/Listners/JsonRequestTransformerListener.php:24    [M] MethodCallRemoval
+
+@@ @@
+         $response = new JsonResponse();
+         if (!$this->isJsonRequest($request)) {
+             $response = $response->setData(['error' => 'Only JSON requests are allowed.']);
+-            $response->setStatusCode(Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
++            
+             $event->setResponse($response);
+             return;
+         }
+
+
+68) /var/www/html/src/Listners/JsonRequestTransformerListener.php:25    [M] MethodCallRemoval
+
+@@ @@
+         if (!$this->isJsonRequest($request)) {
+             $response = $response->setData(['error' => 'Only JSON requests are allowed.']);
+             $response->setStatusCode(Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+-            $event->setResponse($response);
++            
+             return;
+         }
+         if (!$this->transformJsonBody($request)) {
+
+
+69) /var/www/html/src/Listners/JsonRequestTransformerListener.php:28    [M] LogicalNot
+
+@@ @@
+             $event->setResponse($response);
+             return;
+         }
+-        if (!$this->transformJsonBody($request)) {
++        if ($this->transformJsonBody($request)) {
+             $response = $response->setData(['error' => 'Unable to parse request.']);
+             $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+             $event->setResponse($response);
+
+
+70) /var/www/html/src/Listners/JsonRequestTransformerListener.php:29    [M] ArrayItemRemoval
+
+@@ @@
+             return;
+         }
+         if (!$this->transformJsonBody($request)) {
+-            $response = $response->setData(['error' => 'Unable to parse request.']);
++            $response = $response->setData([]);
+             $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+             $event->setResponse($response);
+         }
+
+
+71) /var/www/html/src/Listners/JsonRequestTransformerListener.php:30    [M] MethodCallRemoval
+
+@@ @@
+         }
+         if (!$this->transformJsonBody($request)) {
+             $response = $response->setData(['error' => 'Unable to parse request.']);
+-            $response->setStatusCode(Response::HTTP_BAD_REQUEST);
++            
+             $event->setResponse($response);
+         }
+     }
+
+
+72) /var/www/html/src/Listners/JsonRequestTransformerListener.php:31    [M] MethodCallRemoval
+
+@@ @@
+         if (!$this->transformJsonBody($request)) {
+             $response = $response->setData(['error' => 'Unable to parse request.']);
+             $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+-            $event->setResponse($response);
++            
+         }
+     }
+     private function isJsonRequest(Request $request)
+
+
+73) /var/www/html/src/Listners/JsonRequestTransformerListener.php:37    [M] Identical
+
+@@ @@
+     }
+     private function isJsonRequest(Request $request)
+     {
+-        return 'json' === $request->getContentTypeFormat();
++        return 'json' !== $request->getContentTypeFormat();
+     }
+     private function transformJsonBody(Request $request)
+     {
+
+
+74) /var/www/html/src/Listners/JsonRequestTransformerListener.php:43    [M] NotIdentical
+
+@@ @@
+     private function transformJsonBody(Request $request)
+     {
+         $data = json_decode($request->getContent(), true);
+-        if (json_last_error() !== JSON_ERROR_NONE) {
++        if (json_last_error() === JSON_ERROR_NONE) {
+             return false;
+         }
+         if ($data === null) {
+
+
+75) /var/www/html/src/Listners/JsonRequestTransformerListener.php:44    [M] FalseValue
+
+@@ @@
+     {
+         $data = json_decode($request->getContent(), true);
+         if (json_last_error() !== JSON_ERROR_NONE) {
+-            return false;
++            return true;
+         }
+         if ($data === null) {
+             return true;
+
+
+76) /var/www/html/src/Listners/JsonRequestTransformerListener.php:46    [M] Identical
+
+@@ @@
+         if (json_last_error() !== JSON_ERROR_NONE) {
+             return false;
+         }
+-        if ($data === null) {
++        if ($data !== null) {
+             return true;
+         }
+         $request->request->replace($data);
+
+
+77) /var/www/html/src/Listners/JsonRequestTransformerListener.php:47    [M] TrueValue
+
+@@ @@
+             return false;
+         }
+         if ($data === null) {
+-            return true;
++            return false;
+         }
+         $request->request->replace($data);
+         return true;
+     }
+ }
+
+
+78) /var/www/html/src/Listners/JsonRequestTransformerListener.php:49    [M] MethodCallRemoval
+
+@@ @@
+         if ($data === null) {
+             return true;
+         }
+-        $request->request->replace($data);
++        
+         return true;
+     }
+ }
+
+
+79) /var/www/html/src/Listners/JsonRequestTransformerListener.php:50    [M] TrueValue
+
+@@ @@
+             return true;
+         }
+         $request->request->replace($data);
+-        return true;
++        return false;
+     }
+ }
+
+
+80) /var/www/html/src/Listners/JsonResponseTransformerListener.php:10    [M] PublicVisibility
+
+@@ @@
+ use Symfony\Component\HttpKernel\Event\ResponseEvent;
+ class JsonResponseTransformerListener
+ {
+-    public function onKernelResponse(ResponseEvent $event)
++    protected function onKernelResponse(ResponseEvent $event)
+     {
+         $response = $event->getResponse();
+         if (!$event->isMainRequest()) {
+
+
+81) /var/www/html/src/Listners/JsonResponseTransformerListener.php:13    [M] LogicalNot
+
+@@ @@
+     public function onKernelResponse(ResponseEvent $event)
+     {
+         $response = $event->getResponse();
+-        if (!$event->isMainRequest()) {
++        if ($event->isMainRequest()) {
+             return;
+         }
+         $content = $response->getContent();
+
+
+82) /var/www/html/src/Listners/JsonResponseTransformerListener.php:17    [M] IfNegation
+
+@@ @@
+             return;
+         }
+         $content = $response->getContent();
+-        if ($this->isJson($content)) {
++        if (!$this->isJson($content)) {
+             return;
+         }
+         $jsonContent = json_encode(['status' => $response->getStatusCode(), 'data' => $content]);
+
+
+83) /var/www/html/src/Listners/JsonResponseTransformerListener.php:20    [M] ArrayItemRemoval
+
+@@ @@
+         if ($this->isJson($content)) {
+             return;
+         }
+-        $jsonContent = json_encode(['status' => $response->getStatusCode(), 'data' => $content]);
++        $jsonContent = json_encode(['data' => $content]);
+         if ($jsonContent) {
+             $newResponse = new Response($jsonContent, $response->getStatusCode(), ['Content-Type' => 'application/json']);
+             $event->setResponse($newResponse);
+
+
+84) /var/www/html/src/Listners/JsonResponseTransformerListener.php:21    [M] ArrayItem
+
+@@ @@
+         if ($this->isJson($content)) {
+             return;
+         }
+-        $jsonContent = json_encode(['status' => $response->getStatusCode(), 'data' => $content]);
++        $jsonContent = json_encode(['status' > $response->getStatusCode(), 'data' => $content]);
+         if ($jsonContent) {
+             $newResponse = new Response($jsonContent, $response->getStatusCode(), ['Content-Type' => 'application/json']);
+             $event->setResponse($newResponse);
+
+
+85) /var/www/html/src/Listners/JsonResponseTransformerListener.php:24    [M] IfNegation
+
+@@ @@
+             return;
+         }
+         $jsonContent = json_encode(['status' => $response->getStatusCode(), 'data' => $content]);
+-        if ($jsonContent) {
++        if (!$jsonContent) {
+             $newResponse = new Response($jsonContent, $response->getStatusCode(), ['Content-Type' => 'application/json']);
+             $event->setResponse($newResponse);
+         }
+
+
+86) /var/www/html/src/Listners/JsonResponseTransformerListener.php:28    [M] ArrayItemRemoval
+
+@@ @@
+         }
+         $jsonContent = json_encode(['status' => $response->getStatusCode(), 'data' => $content]);
+         if ($jsonContent) {
+-            $newResponse = new Response($jsonContent, $response->getStatusCode(), ['Content-Type' => 'application/json']);
++            $newResponse = new Response($jsonContent, $response->getStatusCode(), []);
+             $event->setResponse($newResponse);
+         }
+     }
+
+
+87) /var/www/html/src/Listners/JsonResponseTransformerListener.php:30    [M] MethodCallRemoval
+
+@@ @@
+         $jsonContent = json_encode(['status' => $response->getStatusCode(), 'data' => $content]);
+         if ($jsonContent) {
+             $newResponse = new Response($jsonContent, $response->getStatusCode(), ['Content-Type' => 'application/json']);
+-            $event->setResponse($newResponse);
++            
+         }
+     }
+     private function isJson(string $string): bool
+
+
+88) /var/www/html/src/Listners/JsonResponseTransformerListener.php:37    [M] FalseValue
+
+@@ @@
+     private function isJson(string $string): bool
+     {
+         if (empty($string)) {
+-            return false;
++            return true;
+         }
+         json_decode($string);
+         return json_last_error() === JSON_ERROR_NONE;
+     }
+ }
+
+
+89) /var/www/html/src/Listners/JsonResponseTransformerListener.php:39    [M] FunctionCallRemoval
+
+@@ @@
+         if (empty($string)) {
+             return false;
+         }
+-        json_decode($string);
++        
+         return json_last_error() === JSON_ERROR_NONE;
+     }
+ }
+
+
+90) /var/www/html/src/Listners/JsonResponseTransformerListener.php:40    [M] Identical
+
+@@ @@
+             return false;
+         }
+         json_decode($string);
+-        return json_last_error() === JSON_ERROR_NONE;
++        return json_last_error() !== JSON_ERROR_NONE;
+     }
+ }
+
+
+91) /var/www/html/src/Repository/CouponRepository.php:19    [M] MethodCallRemoval
+
+@@ @@
+ {
+     public function __construct(ManagerRegistry $registry)
+     {
+-        parent::__construct($registry, Coupon::class);
++        
+     }
+     public function findByCode(string $code): Coupon
+     {
+
+
+92) /var/www/html/src/Repository/CouponRepository.php:27    [M] ArrayItemRemoval
+
+@@ @@
+         /**
+          * @var Coupon $coupon
+          */
+-        $coupon = $this->findOneBy(['code' => $code]);
++        $coupon = $this->findOneBy([]);
+         if (!$coupon) {
+             throw new CouponNotFoundException();
+         }
+
+
+93) /var/www/html/src/Repository/CouponRepository.php:28    [M] LogicalNot
+
+@@ @@
+          * @var Coupon $coupon
+          */
+         $coupon = $this->findOneBy(['code' => $code]);
+-        if (!$coupon) {
++        if ($coupon) {
+             throw new CouponNotFoundException();
+         }
+         return $coupon;
+     }
+ }
+
+
+94) /var/www/html/src/Repository/CouponRepository.php:29    [M] Throw_
+
+@@ @@
+          */
+         $coupon = $this->findOneBy(['code' => $code]);
+         if (!$coupon) {
+-            throw new CouponNotFoundException();
++            new CouponNotFoundException();
+         }
+         return $coupon;
+     }
+ }
+
+
+95) /var/www/html/src/Repository/ProductRepository.php:18    [M] MethodCallRemoval
+
+@@ @@
+ {
+     public function __construct(ManagerRegistry $registry)
+     {
+-        parent::__construct($registry, Product::class);
++        
+     }
+     public function findById(int $id): Product
+     {
+
+
+96) /var/www/html/src/Repository/ProductRepository.php:24    [M] LogicalNot
+
+@@ @@
+     public function findById(int $id): Product
+     {
+         $product = $this->find($id);
+-        if (!$product) {
++        if ($product) {
+             throw new ProductNotFoundException();
+         }
+         return $product;
+     }
+ }
+
+
+97) /var/www/html/src/Repository/ProductRepository.php:25    [M] Throw_
+
+@@ @@
+     {
+         $product = $this->find($id);
+         if (!$product) {
+-            throw new ProductNotFoundException();
++            new ProductNotFoundException();
+         }
+         return $product;
+     }
+ }
+
+
+98) /var/www/html/src/Resolvers/DTOResolver.php:24    [M] Identical
+
+@@ @@
+     public function resolve(Request $request, ArgumentMetadata $argument): iterable
+     {
+         $type = $argument->getType();
+-        if ($type === null || !is_a($type, RequestDTO::class, true)) {
++        if ($type !== null || !is_a($type, RequestDTO::class, true)) {
+             return [];
+         }
+         $data = $request->getContent();
+
+
+99) /var/www/html/src/Resolvers/DTOResolver.php:24    [M] LogicalNot
+
+@@ @@
+     public function resolve(Request $request, ArgumentMetadata $argument): iterable
+     {
+         $type = $argument->getType();
+-        if ($type === null || !is_a($type, RequestDTO::class, true)) {
++        if ($type === null || is_a($type, RequestDTO::class, true)) {
+             return [];
+         }
+         $data = $request->getContent();
+
+
+100) /var/www/html/src/Resolvers/DTOResolver.php:24    [M] LogicalOr
+
+@@ @@
+     public function resolve(Request $request, ArgumentMetadata $argument): iterable
+     {
+         $type = $argument->getType();
+-        if ($type === null || !is_a($type, RequestDTO::class, true)) {
++        if ($type === null && !is_a($type, RequestDTO::class, true)) {
+             return [];
+         }
+         $data = $request->getContent();
+
+
+101) /var/www/html/src/Resolvers/DTOResolver.php:24    [M] LogicalOrAllSubExprNegation
+
+@@ @@
+     public function resolve(Request $request, ArgumentMetadata $argument): iterable
+     {
+         $type = $argument->getType();
+-        if ($type === null || !is_a($type, RequestDTO::class, true)) {
++        if (!($type === null) || is_a($type, RequestDTO::class, true)) {
+             return [];
+         }
+         $data = $request->getContent();
+
+
+102) /var/www/html/src/Resolvers/DTOResolver.php:24    [M] LogicalOrNegation
+
+@@ @@
+     public function resolve(Request $request, ArgumentMetadata $argument): iterable
+     {
+         $type = $argument->getType();
+-        if ($type === null || !is_a($type, RequestDTO::class, true)) {
++        if (!($type === null || !is_a($type, RequestDTO::class, true))) {
+             return [];
+         }
+         $data = $request->getContent();
+
+
+103) /var/www/html/src/Resolvers/DTOResolver.php:33    [M] Catch_
+
+@@ @@
+         } else {
+             try {
+                 $dto = $this->serializer->deserialize($data, $type, 'json');
+-            } catch (NotEncodableValueException|NotNormalizableValueException $e) {
++            } catch (NotNormalizableValueException $e) {
+                 throw new InvalidDtoArguments([]);
+             }
+         }
+
+
+104) /var/www/html/src/Resolvers/DTOResolver.php:33    [M] Catch_
+
+@@ @@
+         } else {
+             try {
+                 $dto = $this->serializer->deserialize($data, $type, 'json');
+-            } catch (NotEncodableValueException|NotNormalizableValueException $e) {
++            } catch (NotEncodableValueException $e) {
+                 throw new InvalidDtoArguments([]);
+             }
+         }
+
+
+105) /var/www/html/src/Resolvers/DTOResolver.php:34    [M] Throw_
+
+@@ @@
+             try {
+                 $dto = $this->serializer->deserialize($data, $type, 'json');
+             } catch (NotEncodableValueException|NotNormalizableValueException $e) {
+-                throw new InvalidDtoArguments([]);
++                new InvalidDtoArguments([]);
+             }
+         }
+         $violations = $this->validator->validate($dto);
+
+
+106) /var/www/html/src/Resolvers/DTOResolver.php:38    [M] GreaterThan
+
+@@ @@
+             }
+         }
+         $violations = $this->validator->validate($dto);
+-        if (count($violations) > 0) {
++        if (count($violations) >= 0) {
+             $errors = [];
+             foreach ($violations as $violation) {
+                 $errors[$violation->getPropertyPath()] = $violation->getMessage();
+
+
+107) /var/www/html/src/Resolvers/DTOResolver.php:38    [M] GreaterThanNegotiation
+
+@@ @@
+             }
+         }
+         $violations = $this->validator->validate($dto);
+-        if (count($violations) > 0) {
++        if (count($violations) <= 0) {
+             $errors = [];
+             foreach ($violations as $violation) {
+                 $errors[$violation->getPropertyPath()] = $violation->getMessage();
+
+
+108) /var/www/html/src/Resolvers/DTOResolver.php:40    [M] Foreach_
+
+@@ @@
+         $violations = $this->validator->validate($dto);
+         if (count($violations) > 0) {
+             $errors = [];
+-            foreach ($violations as $violation) {
++            foreach ([] as $violation) {
+                 $errors[$violation->getPropertyPath()] = $violation->getMessage();
+             }
+             throw new InvalidDtoArguments($errors);
+
+
+109) /var/www/html/src/Resolvers/DTOResolver.php:43    [M] Throw_
+
+@@ @@
+             foreach ($violations as $violation) {
+                 $errors[$violation->getPropertyPath()] = $violation->getMessage();
+             }
+-            throw new InvalidDtoArguments($errors);
++            new InvalidDtoArguments($errors);
+         }
+         yield $dto;
+     }
+ }
+
+
+110) /var/www/html/src/Services/Payment/PaymentProcessorFactory.php:11    [M] PublicVisibility
+
+@@ @@
+     public function __construct(private array $processors)
+     {
+     }
+-    public function create(string $processorName): PaymentProcessorInterface
++    protected function create(string $processorName): PaymentProcessorInterface
+     {
+         if (!isset($this->processors[$processorName])) {
+             throw new \InvalidArgumentException(sprintf('Payment processor "%s" is not supported.', $processorName));
+
+
+111) /var/www/html/src/Services/Payment/PaymentProcessorFactory.php:13    [M] LogicalNot
+
+@@ @@
+     }
+     public function create(string $processorName): PaymentProcessorInterface
+     {
+-        if (!isset($this->processors[$processorName])) {
++        if (isset($this->processors[$processorName])) {
+             throw new \InvalidArgumentException(sprintf('Payment processor "%s" is not supported.', $processorName));
+         }
+         if (!$this->processors[$processorName] instanceof PaymentProcessorInterface) {
+
+
+112) /var/www/html/src/Services/Payment/PaymentProcessorFactory.php:14    [M] Throw_
+
+@@ @@
+     public function create(string $processorName): PaymentProcessorInterface
+     {
+         if (!isset($this->processors[$processorName])) {
+-            throw new \InvalidArgumentException(sprintf('Payment processor "%s" is not supported.', $processorName));
++            new \InvalidArgumentException(sprintf('Payment processor "%s" is not supported.', $processorName));
+         }
+         if (!$this->processors[$processorName] instanceof PaymentProcessorInterface) {
+             throw new \LogicException(sprintf('Service "%s" must implement PaymentProcessorInterface.', $processorName));
+
+
+113) /var/www/html/src/Services/Payment/PaymentProcessorFactory.php:16    [M] InstanceOf_
+
+@@ @@
+         if (!isset($this->processors[$processorName])) {
+             throw new \InvalidArgumentException(sprintf('Payment processor "%s" is not supported.', $processorName));
+         }
+-        if (!$this->processors[$processorName] instanceof PaymentProcessorInterface) {
++        if (!true) {
+             throw new \LogicException(sprintf('Service "%s" must implement PaymentProcessorInterface.', $processorName));
+         }
+         return $this->processors[$processorName];
+
+
+114) /var/www/html/src/Services/Payment/PaymentProcessorFactory.php:16    [M] InstanceOf_
+
+@@ @@
+         if (!isset($this->processors[$processorName])) {
+             throw new \InvalidArgumentException(sprintf('Payment processor "%s" is not supported.', $processorName));
+         }
+-        if (!$this->processors[$processorName] instanceof PaymentProcessorInterface) {
++        if (!false) {
+             throw new \LogicException(sprintf('Service "%s" must implement PaymentProcessorInterface.', $processorName));
+         }
+         return $this->processors[$processorName];
+
+
+115) /var/www/html/src/Services/Payment/PaymentProcessorFactory.php:16    [M] LogicalNot
+
+@@ @@
+         if (!isset($this->processors[$processorName])) {
+             throw new \InvalidArgumentException(sprintf('Payment processor "%s" is not supported.', $processorName));
+         }
+-        if (!$this->processors[$processorName] instanceof PaymentProcessorInterface) {
++        if ($this->processors[$processorName] instanceof PaymentProcessorInterface) {
+             throw new \LogicException(sprintf('Service "%s" must implement PaymentProcessorInterface.', $processorName));
+         }
+         return $this->processors[$processorName];
+
+
+116) /var/www/html/src/Services/Payment/PaymentProcessorFactory.php:17    [M] Throw_
+
+@@ @@
+             throw new \InvalidArgumentException(sprintf('Payment processor "%s" is not supported.', $processorName));
+         }
+         if (!$this->processors[$processorName] instanceof PaymentProcessorInterface) {
+-            throw new \LogicException(sprintf('Service "%s" must implement PaymentProcessorInterface.', $processorName));
++            new \LogicException(sprintf('Service "%s" must implement PaymentProcessorInterface.', $processorName));
+         }
+         return $this->processors[$processorName];
+     }
+
+
+117) /var/www/html/src/Services/Payment/PaymentProcessorFactory.php:22    [M] PublicVisibility
+
+@@ @@
+         }
+         return $this->processors[$processorName];
+     }
+-    public function getSupportedProcessors(): array
++    protected function getSupportedProcessors(): array
+     {
+         return array_keys($this->processors);
+     }
+ }
+
+
+118) /var/www/html/src/Services/Payment/PaymentProcessorFactory.php:24    [M] UnwrapArrayKeys
+
+@@ @@
+     }
+     public function getSupportedProcessors(): array
+     {
+-        return array_keys($this->processors);
++        return $this->processors;
+     }
+ }
+
+
+119) /var/www/html/src/Services/Payment/PaypalAdapter.php:16    [M] MethodCallRemoval
+
+@@ @@
+     public function process(float $amount): bool
+     {
+         try {
+-            $this->processor->pay(intval($amount));
++            
+             return true;
+         } catch (\Exception $exception) {
+             // Логика если платеж не удался
+
+
+120) /var/www/html/src/Services/Payment/PaypalAdapter.php:17    [M] TrueValue
+
+@@ @@
+     {
+         try {
+             $this->processor->pay(intval($amount));
+-            return true;
++            return false;
+         } catch (\Exception $exception) {
+             // Логика если платеж не удался
+             return false;
+
+
+121) /var/www/html/src/Services/Payment/PaypalAdapter.php:20    [M] FalseValue
+
+@@ @@
+             return true;
+         } catch (\Exception $exception) {
+             // Логика если платеж не удался
+-            return false;
++            return true;
+         }
+     }
+ }
+
+
+122) /var/www/html/src/Services/PurchaseService.php:13    [M] PublicVisibility
+
+@@ @@
+     public function __construct(private PaymentProcessorFactory $processorFactory)
+     {
+     }
+-    public function purchase(float $price, string $paymentProcessor): bool
++    protected function purchase(float $price, string $paymentProcessor): bool
+     {
+         $processor = $this->processorFactory->create($paymentProcessor);
+         return $processor->process($price);
+     }
+ }
+
+
+123) /var/www/html/src/Validators/SupportedPaymentProcessorValidator.php:18    [M] InstanceOf_
+
+@@ @@
+     }
+     public function validate($value, Constraint $constraint): void
+     {
+-        if (!$constraint instanceof SupportedPaymentProcessor) {
++        if (!true) {
+             throw new UnexpectedTypeException($constraint, SupportedPaymentProcessor::class);
+         }
+         if ($value === null || $value === '') {
+
+
+124) /var/www/html/src/Validators/SupportedPaymentProcessorValidator.php:18    [M] InstanceOf_
+
+@@ @@
+     }
+     public function validate($value, Constraint $constraint): void
+     {
+-        if (!$constraint instanceof SupportedPaymentProcessor) {
++        if (!false) {
+             throw new UnexpectedTypeException($constraint, SupportedPaymentProcessor::class);
+         }
+         if ($value === null || $value === '') {
+
+
+125) /var/www/html/src/Validators/SupportedPaymentProcessorValidator.php:18    [M] LogicalNot
+
+@@ @@
+     }
+     public function validate($value, Constraint $constraint): void
+     {
+-        if (!$constraint instanceof SupportedPaymentProcessor) {
++        if ($constraint instanceof SupportedPaymentProcessor) {
+             throw new UnexpectedTypeException($constraint, SupportedPaymentProcessor::class);
+         }
+         if ($value === null || $value === '') {
+
+
+126) /var/www/html/src/Validators/SupportedPaymentProcessorValidator.php:19    [M] Throw_
+
+@@ @@
+     public function validate($value, Constraint $constraint): void
+     {
+         if (!$constraint instanceof SupportedPaymentProcessor) {
+-            throw new UnexpectedTypeException($constraint, SupportedPaymentProcessor::class);
++            new UnexpectedTypeException($constraint, SupportedPaymentProcessor::class);
+         }
+         if ($value === null || $value === '') {
+             return;
+
+
+127) /var/www/html/src/Validators/SupportedPaymentProcessorValidator.php:21    [M] Identical
+
+@@ @@
+         if (!$constraint instanceof SupportedPaymentProcessor) {
+             throw new UnexpectedTypeException($constraint, SupportedPaymentProcessor::class);
+         }
+-        if ($value === null || $value === '') {
++        if ($value !== null || $value === '') {
+             return;
+         }
+         $supportedProcessors = $this->processorFactory->getSupportedProcessors();
+
+
+128) /var/www/html/src/Validators/SupportedPaymentProcessorValidator.php:21    [M] Identical
+
+@@ @@
+         if (!$constraint instanceof SupportedPaymentProcessor) {
+             throw new UnexpectedTypeException($constraint, SupportedPaymentProcessor::class);
+         }
+-        if ($value === null || $value === '') {
++        if ($value === null || $value !== '') {
+             return;
+         }
+         $supportedProcessors = $this->processorFactory->getSupportedProcessors();
+
+
+129) /var/www/html/src/Validators/SupportedPaymentProcessorValidator.php:21    [M] LogicalOrAllSubExprNegation
+
+@@ @@
+         if (!$constraint instanceof SupportedPaymentProcessor) {
+             throw new UnexpectedTypeException($constraint, SupportedPaymentProcessor::class);
+         }
+-        if ($value === null || $value === '') {
++        if (!($value === null) || !($value === '')) {
+             return;
+         }
+         $supportedProcessors = $this->processorFactory->getSupportedProcessors();
+
+
+130) /var/www/html/src/Validators/SupportedPaymentProcessorValidator.php:21    [M] LogicalOrNegation
+
+@@ @@
+         if (!$constraint instanceof SupportedPaymentProcessor) {
+             throw new UnexpectedTypeException($constraint, SupportedPaymentProcessor::class);
+         }
+-        if ($value === null || $value === '') {
++        if (!($value === null || $value === '')) {
+             return;
+         }
+         $supportedProcessors = $this->processorFactory->getSupportedProcessors();
+
+
+131) /var/www/html/src/Validators/SupportedPaymentProcessorValidator.php:25    [M] LogicalNot
+
+@@ @@
+             return;
+         }
+         $supportedProcessors = $this->processorFactory->getSupportedProcessors();
+-        if (!in_array($value, $supportedProcessors, true)) {
++        if (in_array($value, $supportedProcessors, true)) {
+             $this->context->buildViolation($constraint->message)->setParameter('{{ value }}', $value)->setParameter('{{ supported }}', implode(', ', $supportedProcessors))->addViolation();
+         }
+     }
+ }
+
+
+132) /var/www/html/src/Validators/SupportedPaymentProcessorValidator.php:26    [M] MethodCallRemoval
+
+@@ @@
+         }
+         $supportedProcessors = $this->processorFactory->getSupportedProcessors();
+         if (!in_array($value, $supportedProcessors, true)) {
+-            $this->context->buildViolation($constraint->message)->setParameter('{{ value }}', $value)->setParameter('{{ supported }}', implode(', ', $supportedProcessors))->addViolation();
++            
+         }
+     }
+ }

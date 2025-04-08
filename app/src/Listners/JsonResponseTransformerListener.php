@@ -21,12 +21,14 @@ class JsonResponseTransformerListener
             'status' => $response->getStatusCode(),
             'data' => $content,
         ]);
-        $newResponse = new Response(
-            $jsonContent,
-            $response->getStatusCode(),
-            ['Content-Type' => 'application/json']
-        );
-        $event->setResponse($newResponse);
+        if ($jsonContent) {
+            $newResponse = new Response(
+                $jsonContent,
+                $response->getStatusCode(),
+                ['Content-Type' => 'application/json']
+            );
+            $event->setResponse($newResponse);
+        }
     }
 
     private function isJson(string $string): bool

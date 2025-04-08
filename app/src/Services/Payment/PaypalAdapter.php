@@ -13,7 +13,7 @@ class PaypalAdapter implements PaymentProcessorInterface
     public function process(float $amount): bool
     {
         try {
-            $this->processor->pay($amount);
+            $this->processor->pay(intval($amount));
             return true;
         } catch (\Exception $exception) {
             // Логика если платеж не удался

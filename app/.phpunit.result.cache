@@ -1,0 +1,1 @@
+{"version":1,"defects":[],"times":{"App\\Tests\\Unit\\PriceCalculatorTest::testCalculatePriceWithPercentCoupon":0.002,"App\\Tests\\Unit\\PriceCalculatorTest::testCalculatePriceWithFixedCoupon":0,"App\\Tests\\Unit\\PriceCalculatorTest::testCalculatePriceWithInvalidCountryCode":0,"App\\Tests\\Unit\\PriceCalculatorTest::testCalculatePriceWithoutCoupon":0}}
