@@ -2,10 +2,11 @@
 
 namespace App\Requests;
 
+use App\Validators\SupportedPaymentProcessor;
 use Symfony\Component\Validator\Constraints as Assert;
 class PurchaseRequest extends PriceCalculationRequest
 {
     #[Assert\NotBlank]
-    #[Assert\Choice(choices: ['paypal', 'stripe'])]
+    #[SupportedPaymentProcessor]
     public string $paymentProcessor;
 }

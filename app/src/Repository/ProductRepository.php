@@ -18,7 +18,7 @@ class ProductRepository extends ServiceEntityRepository implements ProductReposi
         parent::__construct($registry, Product::class);
     }
 
-    public function findById(int $id): ?Product
+    public function findById(int $id): Product
     {
         $product = $this->find($id);
         if (!$product) {

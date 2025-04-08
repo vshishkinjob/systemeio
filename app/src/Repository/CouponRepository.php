@@ -19,7 +19,7 @@ class CouponRepository extends ServiceEntityRepository implements CouponReposito
         parent::__construct($registry, Coupon::class);
     }
 
-    public function findByCode(string $code): ?Coupon
+    public function findByCode(string $code): Coupon
     {
         /**
          * @var Coupon $coupon

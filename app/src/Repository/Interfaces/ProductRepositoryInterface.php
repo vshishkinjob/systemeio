@@ -6,5 +6,5 @@ use App\Entity\Product;
 
 interface ProductRepositoryInterface
 {
-    public function findById(int $id): ?Product;
+    public function findById(int $id): Product;
 }

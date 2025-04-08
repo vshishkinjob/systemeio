@@ -14,13 +14,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DTOResolver implements ValueResolverInterface
 {
-    private SerializerInterface $serializer;
-    private ValidatorInterface $validator;
-
-    public function __construct(SerializerInterface $serializer, ValidatorInterface $validator)
+    public function __construct(private SerializerInterface $serializer, private ValidatorInterface $validator)
     {
-        $this->serializer = $serializer;
-        $this->validator = $validator;
     }
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable

@@ -4,7 +4,6 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -37,3 +36,22 @@ services:
             $validator: '@validator'
         tags:
             - { name: controller.argument_value_resolver}
+    Systemeio\TestForCandidates\PaymentProcessor\PaypalPaymentProcessor: ~
+    Systemeio\TestForCandidates\PaymentProcessor\StripePaymentProcessor: ~
+    App\Services\Payment\PaypalAdapter:
+        arguments:
+            $processor: '@Systemeio\TestForCandidates\PaymentProcessor\PaypalPaymentProcessor'
+
+    App\Services\Payment\StripeAdapter:
+        arguments:
+            $processor: '@Systemeio\TestForCandidates\PaymentProcessor\StripePaymentProcessor'
+    App\Services\Payment\PaymentProcessorFactory:
+        arguments:
+            $processors:
+                paypal: '@App\Services\Payment\PaypalAdapter'
+                stripe: '@App\Services\Payment\StripeAdapter'
+    App\Validators\SupportedPaymentProcessorValidator:
+        arguments:
+            $processorFactory: '@App\Services\Payment\PaymentProcessorFactory'
+        tags:
+            - { name: validator.constraint_validator }

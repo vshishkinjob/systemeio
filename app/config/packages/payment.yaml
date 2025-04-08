@@ -1,0 +1,4 @@
+parameters:
+  payment.processors:
+    paypal: App\Services\Payment\PaypalAdapter
+    stripe: App\Services\Payment\StripeAdapter

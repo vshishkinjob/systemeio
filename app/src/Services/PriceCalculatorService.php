@@ -8,6 +8,7 @@ use App\Repository\Interfaces\ProductRepositoryInterface;
 
 class PriceCalculatorService
 {
+    //Todo перевести в enum
     private array $taxRates = [
         'DE' => 0.19,
         'IT' => 0.22,
