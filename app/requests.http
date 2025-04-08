@@ -1,12 +1,52 @@
-### Calculate Price
+### Calculate Price with Coupon 10%
 POST http://172.25.0.4:80/calculate-price
 Accept: application/json
 Content-Type: application/json
 
 {
-  "product": 1,
+  "productId": 1,
   "taxNumber": "DE123456789",
   "couponCode": "D15"
+}
+
+### Calculate Price without Coupon
+POST http://172.25.0.4:80/calculate-price
+Accept: application/json
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "taxNumber": "DE123456789"
+}
+
+### Calculate Price with invalid taxNumber
+POST http://172.25.0.4:80/calculate-price
+Accept: application/json
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "taxNumber": "DW"
+}
+
+### Calculate Price without required productID and invalid taxNumber
+POST http://172.25.0.4:80/calculate-price
+Accept: application/json
+Content-Type: application/json
+
+{
+  "taxNumber": "DW"
+}
+
+### Calculate Price with invalid couponCode
+POST http://172.25.0.4:80/calculate-price
+Accept: application/json
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "taxNumber": "DE123456789",
+  "couponCode": "A15"
 }
 
 ### Execute Purchase
@@ -15,8 +55,20 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "product": 1,
+  "productId": 1,
   "taxNumber": "IT12345678900",
   "couponCode": "D15",
   "paymentProcessor": "paypal"
+}
+
+### Execute Purchase and invalid processor
+POST http://172.25.0.4:80/purchase
+Accept: application/json
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "taxNumber": "IT12345678900",
+  "couponCode": "D15",
+  "paymentProcessor": "undefined"
 }
