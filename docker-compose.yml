@@ -39,7 +39,7 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ${POSTGRES_CONF_PATH}:/etc/postgresql/postgresql.conf
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_POSTGRES_USER}" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
       interval: 10s
       timeout: 5s
       retries: 5
